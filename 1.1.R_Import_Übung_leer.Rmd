@@ -1,0 +1,77 @@
+---
+title: "Demo - Import von Daten, Zuweisen von Objekten, Abspeichern von Datensätzen "
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Import von Daten über das Menü in Environment:
+* Menü: Environment -> Import Dataset -> from Excel -> browse: „Rohdaten_2020-11-23.xlsx“  & open 
+* Import options: sheet (Arbeitsblatt auswählen) „Rohdaten“
+* Kontrollieren, wie Import aussieht (Trennzeichen: Komma, Semikolon)
+* Code preview: Code kopieren & in Skript einfügen
+* Import
+
+
+#### Code aus Code Preview einfügen & Ansicht der Daten "Rohdaten_2020_11_23"
+```{r message=FALSE, warning=FALSE}
+### code aus code preview 
+
+```
+
+Üblich ist es den Code für das Einlesen direkt ins Skript zu schreiben. Falls es zu Problemen beim Einlesen kommt, liegt es meistens am Pfad, worauf sich das Skipt bezieht und den Datensatz sucht.
+Die Funktion getwd() gibt die *working directory*  also den aktuellen Pfad an, auf das sich das Skript bezieht. Mit setwd() kann dieser Pfad festgelegt werden.
+
+Im Kurs arbeiten wir in einem *Project*. Der Speicherort des  Projekts  "R - Kurs 2021.Rproj" gibt die *working directory* vor.
+
+```{r message=FALSE, warning=FALSE}
+
+```
+
+#### Vorgeschlagenes Objekt „Rohdaten_2020_11_23“ dem neuen Objekt „Daten_Milchkuh_Betriebe“ zuweisen
+```{r message=FALSE, warning=FALSE}
+
+Daten_Milchkuh_Betriebe <- 
+
+```
+
+#### Übersicht über den Datensatz erhalten
+```{r}
+## Datenstruktur
+
+## Kurzübersicht über alle Variablen
+
+```
+
+#### Datensatz „Daten_Milchkuh_Betriebe“ xlsx-Datei und csv-Datei abspeichern
+```{r message=FALSE, warning=FALSE}
+
+## .xlsx- Datei
+
+## .csv- Datei
+
+```
+
+
+#### Das sind alle Pakete, die wir im Kurs brauchen werden, bitte in einer Pause ausführen! 
+
+```{r message=FALSE, warning=FALSE}
+install.packages(c("tidyverse","ggplot2","moments","Rmisc","parameters","ggplot2","kableExtra","psych","Hmisc","pastecs","sjmisc","car","correlation","readxl","emmeans","knitr","ggfortify","ggpubr","gmodels","lme4","lmtest","pastecs","rstatix","scales","sjPlot"))
+
+```
+

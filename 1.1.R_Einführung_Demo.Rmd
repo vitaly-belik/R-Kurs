@@ -1,0 +1,260 @@
+---
+title: "Demo - Import von Daten, Zuweisen von Objekten, Abspeichern von Datensätzen "
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### R-Studio
+##### Vier Bereiche: 
+
++ Links oben: Skript -- write and save code (may only open when you open a new file)
+
++ Links unten: Console  -- input/output der ausgeführt wird, aber NICHT gespeichert wird
+
++ Rechts oben: environment  -- Datensätze, Variablen, Funktionen
+
++ Rechts unten: Ordner(Speicherort Projekt), Pakete, Vorschau Plots, help-Bereich
+
+### R-Markdown file (.Rmd)
+
+File -> New File -> R Markdown
+
+- R-Markdown: komplexer als einfache Skripte, beinhalten Code und Text; hilft bei der Erstellung von Berichten
+
+- zu Beginn:
+
+  ---
+  title: "Intro to R"
+  author: "Susann Weise"
+  date: "07/27/2021"
+  output: html_document
+  ---
+
+- Text steht im weißen Bereich (Bspw. für erklärenden Text)
+
+- Code steht in code chunk 
+  
+```{r}
+
+```
+  
+#### Import von Daten über das Menü in Environment:
+* Menü: Environment -> Import Dataset -> from Excel -> browse: „Rohdaten_2020-11-23.xlsx“  & open 
+* Import options: sheet (Arbeitsblatt auswählen) „Rohdaten“
+* Kontrollieren, wie Import aussieht (Trennzeichen: Komma, Semikolon)
+* Code preview: Code kopieren & in Skript einfügen
+* Import
+
+
+#### Code aus Code Preview einfügen & Ansicht der Daten "Rohdaten_2020_11_23"
+```{r message=FALSE, warning=FALSE}
+
+
+```
+
+#### Vorgeschlagenes Objekt „Rohdaten_2020_11_23“ dem neuen Objekt „Daten_Milchkuh_Betriebe“ zuweisen
+```{r message=FALSE, warning=FALSE}
+
+#Daten_Milchkuh_Betriebe <- Rohdaten_2020_11_23
+
+### in den weiteren Skripten wird folgender Code zum Enlesen verwendet: direkte Zuweisung zu "Daten_Milchkuh_Betriebe"
+Daten_Milchkuh_Betriebe <- readxl::read_excel("../Rohdaten_2020-11-23.xlsx", sheet = "Rohdaten")
+
+```
+
+Üblich ist es den Code für das Einlesen direkt ins Skript zu schreiben. Falls es zu Problemen beim Einlesen kommt, liegt es meistens am Pfad, worauf sich das Skipt bezieht und den Datensatz sucht.
+Die Funktion getwd() gibt die *working directory*  also den aktuellen Pfad an, auf das sich das Skript bezieht. Mit setwd() kann dieser Pfad festgelegt werden.
+
+Im Kurs arbeiten wir in einem *Project*. Der Speicherort des  Projekts  "R - Kurs 2021.Rproj" gibt die *working directory* vor.
+
+```{r message=FALSE, warning=FALSE}
+getwd()
+#setwd()
+
+```
+
+#### Objekte in Environment (case sensitivity)
+```{r message=FALSE, warning=FALSE}
+
+a <- 1
+b <- 4
+c <- a + b
+c
+
+vec1 <- c(1, 4, 6)
+vec2 <- c(6, 3, 1)
+
+vec3 <- vec1 * vec2
+
+#Vec1 ### case sensitive
+
+# Funktionen
+sum(vec1)
+mean(vec2)
+
+```
+
+
+#### Pakete 
+vor der Verwendung von Paketen müssen diese einmalig in der Bibliothek installiert werden.
+Anschließend müssen die Pakete vor der Verwendung deren Funktionen geladen werden.Das Laden eines Pakets ist einmalig vor der Verwendung von dessen Funktionen in der Arbeitssession notwendig.
+```{r message=FALSE, warning=FALSE}
+# Installation
+#install.packages("tidyverse")
+
+#Laden von Paketen
+library(tidyverse)
+
+# alternative Schreibweise:
+# doppelte Doppelpunkte trennen Paket und Funktion - die Zuordnung der Funktion ist gegeben; das Paket muss vorher nicht mit library() geladen werden
+#readxl::read_excel()
+
+```
+
+#### Übersicht über den Datensatz erhalten
+
+```{r message=FALSE, warning=FALSE, echo=TRUE}
+library(tidyverse)
+
+## Datenstruktur
+slice_head(Daten_Milchkuh_Betriebe, n=10)
+glimpse(Daten_Milchkuh_Betriebe)
+colnames(Daten_Milchkuh_Betriebe)
+str(Daten_Milchkuh_Betriebe)
+
+class(Daten_Milchkuh_Betriebe$konv_oeko)
+Daten_Milchkuh_Betriebe$konv_oeko <- as.factor(Daten_Milchkuh_Betriebe$konv_oeko)
+levels(Daten_Milchkuh_Betriebe$konv_oeko)
+Daten_Milchkuh_Betriebe$konv_oeko <- as.numeric(Daten_Milchkuh_Betriebe$konv_oeko)
+
+
+dim(Daten_Milchkuh_Betriebe)
+length(Daten_Milchkuh_Betriebe$farm_id)
+
+
+## Kurzübersicht über alle Variablen
+# 1. Variante
+summary(Daten_Milchkuh_Betriebe)
+
+# 2. Variante
+Hmisc::describe(Daten_Milchkuh_Betriebe) 
+
+# 3. Variante
+Daten_Milchkuh_Betriebe %>%
+  summarize(
+    n = n(),
+    min = min(Tieranzahl),
+    median = median(Tieranzahl),
+    mean = mean(Tieranzahl),
+    max = max(Tieranzahl) 
+  ) %>%
+  kableExtra::kbl() %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+```
+
+#### Data wrangling mit tidyverse
+#Hinweis: Cheat Sheet: https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+
+# "alter" Weg
+a <- filter(Daten_Milchkuh_Betriebe, konv_oeko == 2)
+b <- pull(a, ecm)
+length(b)
+
+
+##### Pipes %>%
+Daten_Milchkuh_Betriebe %>%
+  filter(konv_oeko == 2) %>%
+  pull(ecm) %>%
+  length()
+
+df <- Daten_Milchkuh_Betriebe %>%
+  group_by(konv_oeko) %>%
+  summarise(
+    n = n(),
+    mean = mean(neuinfektrate),
+    CI_upper = Rmisc::CI(neuinfektrate)[1], 
+    CI_lower = Rmisc::CI(neuinfektrate)[3],
+    median = median(neuinfektrate)
+  )
+view(df)
+
+# Auswahl von Spalten
+neu <- Daten_Milchkuh_Betriebe %>%
+       select(farm_id, neuinfektrate, konv_oeko)
+# Spalten umbenennen
+neu <- neu %>%
+       select(ID = farm_id,neuinfektrate, konv_oeko)
+
+# AUswahl von Zeilen
+slice(Daten_Milchkuh_Betriebe, c(4:5, 9:12))
+slice(Daten_Milchkuh_Betriebe, -2)
+
+# Zusammenfassung nach Gruppe konventionell vs. öko
+df <- Daten_Milchkuh_Betriebe %>%
+  group_by(konv_oeko) %>%
+  summarise_each(., funs = mean)
+view(df)
+
+# neue Variable anlegen
+Daten_Milchkuh_Betriebe <- 
+  Daten_Milchkuh_Betriebe %>%
+  mutate(neu = log10(Tieranzahl))
+
+Daten_Milchkuh_Betriebe<- Daten_Milchkuh_Betriebe %>%
+                          mutate(unt_mastitis_text = ifelse(unt_mastitis == 0, yes = 0, no = 1))
+
+# long to wide format
+Daten_Milchkuh_Betriebe_abh <-readxl::read_excel("../Rohdaten_abhängig_2020-11-23.xlsx", sheet = "Rohdaten")
+
+long <- Daten_Milchkuh_Betriebe_abh %>%
+       pivot_longer(names_to = "Jahr", values_to = "Neuinfektrate", cols = starts_with("neuinfektrate"))
+
+# Und wieder zurück
+wide <- long %>%
+        pivot_wider(names_from = Jahr, values_from = Neuinfektrate)
+```
+
+
+#### Grafiken speichern -> Hinweis: help
+```{r message=FALSE, warning=FALSE, echo=T, results='hide'}
+
+jpeg("Scatterplot.jpeg")
+plot(Daten_Milchkuh_Betriebe$neuinfektrate, Daten_Milchkuh_Betriebe$ecm)
+dev.off()
+
+```
+
+#### Datensatz „Daten_Milchkuh_Betriebe“ xlsx-Datei und csv-Datei abspeichern
+```{r message=FALSE, warning=FALSE, echo=T, results='hide'}
+
+## .xlsx- Datei
+writexl::write_xlsx(Daten_Milchkuh_Betriebe, "Daten_R-Kurs_2021.xlsx" )
+
+## .csv- Datei (comma seperated values)
+## write.csv2 nutzt ein ; statt ein ,
+write.csv2(Daten_Milchkuh_Betriebe, "Daten_R-Kurs_2021.csv", row.names = F)
+read.csv2("Daten_R-Kurs_2021.csv")
+
+```
+

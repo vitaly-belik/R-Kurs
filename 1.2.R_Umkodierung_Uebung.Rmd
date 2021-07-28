@@ -1,0 +1,41 @@
+---
+title: "Übung - t-Test für unabhängige Stichproben"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Demo: Visualisierung & Deskription
+
+### Aufgabenstellung
+Erstellen Sie eine neue Variable namens betriebsgroesse. Unterteilen Sie in dieser die Betriebstieranzahl in die zwei Kategorien klein (<=100) und groß (>100) ein.
+
+## So geht´s 
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+Daten_Milchkuh_Betriebe <- readxl::read_excel("../Rohdaten_2020-11-23.xlsx", sheet = "Rohdaten")
+
+# neue Variable "betriebsgroesse"
+Daten_Milchkuh_Betriebe$betriebsgroesse<- ifelse(test = Daten_Milchkuh_Betriebe$Tieranzahl<= 100, yes = 0, no = 1)
+table(Daten_Milchkuh_Betriebe$betriebsgroesse)
+prop.table(table(Daten_Milchkuh_Betriebe$betriebsgroesse))*100
+
+# neue Variable "unt_mastitis_binaer"
+
+
+```

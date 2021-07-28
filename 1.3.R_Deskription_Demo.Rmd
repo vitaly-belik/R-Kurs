@@ -1,0 +1,190 @@
+---
+title: "Übung - t-Test für unabhängige Stichproben"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Demo: Visualisierung & Deskription
+
+### Aufgabenstellung
+Erstellen Sie folgende Abbildungen und entwickeln Sie mithilfe dieser ein Gefühl für die angesprochenen Eigenschaften (Verteilung, Mittelwerte, Maximalwerte, Minimalwerte etc.) der Variablen. Beschreiben Sie dann Variablen bezüglich Lage, Streuung und Form der Verteilung.
+
+## So geht´s 
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+Daten_Milchkuh_Betriebe <- readxl::read_excel("../Rohdaten_2020-11-23.xlsx", sheet = "Rohdaten")
+
+Daten_Milchkuh_Betriebe %>%
+  group_by(desinfektion_zitzen) %>%
+  summarise(n = n(),
+            mean = mean(ecm),
+            CI_upper = Rmisc::CI(ecm)[1], 
+            CI_lower = Rmisc::CI(ecm)[3],
+            median = median(ecm), 
+            var = var(ecm), 
+            sd = sd(ecm),
+            min = min(ecm),
+            max = max(ecm), 
+            IQR = IQR(ecm, na.rm = T),
+            skew = parameters::skewness(ecm), 
+            kurtosis = parameters::kurtosis(ecm) ) %>% 
+  # Als schöne Tabelle ausgeben
+  kableExtra::kbl() %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", position = "left")
+```
+
+Deskriptive Statistiken der Tagesmilchleistung für Betriebe in der Kategorie Desinfektion der Zitzen = 0 (nein) und Desinfektion der Zitzen = 1 (ja).
+Das 95% KI um den Mittelwert ergibt sich aus Mittelwert +/- 2 Standardfehler; wir erwarten den wahren Populationsmittelwert (basierend auf dieser Stichprobe) mit 95 Sicherheit in diesem Intervall.
+Schiefe (Symmetrie) & Wölbung sind Verteilungs-Form-Eigenschaften; der Erwartungswert für eine Standard-Normalverteilung wäre 0 für beide Parameter.
+
+#### Tests auf Normalverteilung -> Kolmogorov-Smirnov/ Shapiro test
+```{r message=FALSE, warning=FALSE}
+## Keine Zitzendesinfektion
+Daten_Milchkuh_Betriebe %>%
+ filter(desinfektion_zitzen == 0) %>%
+ # ECM = Energy-corrected milk yield (~ Brennwert von einem Liter dieser Milch, abhängig von Fett- und Eiweiß-Gehalt)
+ pull(ecm) %>%
+ # Im Zweifelsfall immer 2-seitig testen
+ ks.test(., "pnorm", alternative = "two.sided")
+
+Daten_Milchkuh_Betriebe %>%
+ filter(desinfektion_zitzen == 0) %>%
+ pull(ecm) %>%
+ shapiro.test()
+
+# Mit Zitzendesinfektion
+Daten_Milchkuh_Betriebe %>%
+ filter(desinfektion_zitzen == 1) %>%
+ pull(ecm) %>%
+ ks.test(., "pnorm", alternative = "two.sided", exact = T)
+
+Daten_Milchkuh_Betriebe %>%
+ filter(desinfektion_zitzen == 1) %>%
+ pull(ecm) %>%
+ shapiro.test()
+
+```
+
+Die Verteilung der Messdaten in beiden Gruppen wird statistisch auf „Normalität“ geprüft. Wenn der p-Wert für Signifikanz (entsprechende Spalte) für den ersten oder zweiten Test < 0.05 ist, dann liegen Hinweise auf NICHT-Normalverteilung vor.
+
+#### Balkendiagramm
+```{r message=FALSE, warning=FALSE}
+# Anzahl der Betriebstypen konventionell vs. oekologisch anzeigen
+table(Daten_Milchkuh_Betriebe$konv_oeko)
+
+# Anzahl Betriebe nach Betriebstyp (konventionell/öko) zählen und Anteil an allen Betrieben berechnen.
+Daten_Milchkuh_Betriebe %>%
+  # Faktoren können mit Beschriftungen versehen werden um die Kodierung als Beschriftung in Abbildungen zu verwenden
+  group_by(Betriebstyp = factor(konv_oeko, levels = c(1, 2) , labels = c("konventionell", "oeko"))) %>%
+  summarize(
+    Anzahl = n()
+  ) %>%
+  ungroup() %>%
+  mutate(
+    Anteil_proz = (Anzahl / sum(Anzahl)) * 100 # sum(Anzahl) = Anzahl Betriebe in der Studie
+  ) -> Anteil_konv_oeko
+
+
+#Barplot/ Saeulendiagramm der Anzahl und Anteile der Betriebstypen
+barplot(Anzahl ~ Betriebstyp, data = Anteil_konv_oeko, col=c("blue","red"), main="Anzahl der Betriebstypen")
+barplot(Anteil_proz ~ Betriebstyp, data = Anteil_konv_oeko, col=c("blue","red"), main="prozentuale Anteile der Betriebstypen")
+
+# prozentualer Anteil der MAstitisuntersuchungen pro Betriebstyp Konv vs oekologisch
+library(ggplot2)
+ggplot(data = Daten_Milchkuh_Betriebe, aes(x = as.factor(konv_oeko), 
+                                           # Anteil berechnen indem man durch die Anzahl der Betriebe in der Studie teilt. 
+                                           y = (..count../nrow(Daten_Milchkuh_Betriebe)), 
+                                           # Gruppierung festlegen und einfärben
+                                           group = as.factor(unt_mastitis), fill = as.factor(unt_mastitis))) +
+  geom_bar(position = position_dodge()) +
+  ## y-Achse mit Prozent beschriften
+  scale_y_continuous(labels = scales::label_percent())
+```
+
+
+#### Histogramm
+```{r message=FALSE, warning=FALSE}
+# Variante 1
+hist(Daten_Milchkuh_Betriebe$ecm, main = "Histogramm ecm", breaks = 25, col = "salmon")
+
+# Variante 2
+m <-mean(Daten_Milchkuh_Betriebe$ecm , na.rm=T)
+std <- sqrt(var(Daten_Milchkuh_Betriebe$ecm, na.rm = T))
+
+library(ggplot2)
+ggplot(Daten_Milchkuh_Betriebe, aes(x = ecm)) +
+  geom_histogram(breaks = seq(9, 40, by=1), # Balken zwischen 9 und 40 in 1er Schritten
+                 fill = "green",
+                 col = "darkgreen",
+                 alpha = 0.6) +
+  ## Kurve einer perfekten Normalverteilung
+  stat_function(fun = function(x) dnorm(x, mean = m, sd = std) * nrow(Daten_Milchkuh_Betriebe),  
+    color = "darkred", size = 1) +
+  ggtitle("Histogramm und Normalverteilungskurve - ECM")
+```
+
+Histogramm der Milchleistung in Zitzendesinfektionskategorie mit (theoretischer) Normalverteilungskurve. Die Abweichungen sind moderat.
+
+#### Boxplot
+```{r message=FALSE, warning=FALSE}
+
+boxplot(ecm ~ desinfektion_zitzen, data = Daten_Milchkuh_Betriebe,
+        col = c("salmon", "lightblue"), 
+        main = "Korrigierte Tagesmilchmenge nach Durchführung \n der Zitzendesinfektion ",
+        xlab = "",
+        ylab = "korrigierte Tagesmilchmenge je Kuh",
+        names = c("nein", "ja"))
+abline(h = c(15, 20, 25, 30, 35), col = "grey", lty = 3)
+```
+
+Der vergleichende Boxplot ist sehr gut geeignet, um visuell folgende Dinge zu erfassen:
+-	Symmetrie der Verteilung (gleiche Form oberhalb und unterhalb der Median-Linie)
+-	Vorkommen von Extremwerten (hier mit Zahlen = Datensatz-Nummer) gekennzeichnet
+-	Unterschiede in den Medianen der zwei Gruppen vorhanden (hier ja)
+
+
+#### QQ - Plot
+```{r message=FALSE, warning=FALSE}
+# a bestimmen: ecm der Betriebe, die keine Zitzenreinigung durchführen
+# 1. 
+a <- Daten_Milchkuh_Betriebe[which(Daten_Milchkuh_Betriebe$desinfektion_zitzen == 0),13]
+ 
+# 2.
+a <- Daten_Milchkuh_Betriebe %>%
+     filter(desinfektion_zitzen == 0) %>%
+     select(ecm) 
+
+
+####QQ-Plot korrigierte Tagesmilchmenge (ecm) (Variante 1)
+qqnorm(a$ecm)
+qqline(a$ecm)
+
+#QQ-Plot korrigierte Tagesmilchmenge (ecm) (Variante 2 mit Paket ggplot2)
+ggplot(a, aes(sample = ecm)) +
+  stat_qq() +
+  stat_qq_line()+
+  ggtitle("QQ-plot ecm bei Zitzendesinfektion=nein")
+
+```
+
+Q-Q-Diagramme stellen die Beobachtungswerte den Erwartungswerten unter Annahme der Normalverteilung (Diagonale) gegenüber. Bei perfekter Normalverteilung liegen die Punkte alle auf der Linie. Hier gibt es moderate Abweichungen insbesondere bei kleineren Messwerten (linker unterer Teil).
+
+Fazit
+Beschreibende Statistiken sind wichtig, um zentrale Lagemasse, Streuungsparameter und Verteilungen zu beurteilen. Sie bilden die Grundlage für (Entscheidungen über) weitergehende Auswertungen und die komprimierte Darstellung der Daten und Tabellen und Grafiken.
+
