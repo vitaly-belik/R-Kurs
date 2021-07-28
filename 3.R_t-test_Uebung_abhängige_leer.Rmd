@@ -1,0 +1,189 @@
+---
+title: "Übung - t-Test für abhängige Stichproben"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Übung: t-test für abhängige Stichproben
+
+### Aufgabenstellung
+Überprüfe, ob sich die Neuinfektionsrate zwischen den Jahren 1 und 2 unterscheidet. 
+
+### Hypothese formulieren
+
+### Normalverteilung prüfen
+1. Mittelwert ≈ Median **<span style="color: lightgreen;">$\checkmark$</span>**
+2. Standardabweichung << Mittelwert **<span style="color: lightgreen;">$\checkmark$</span>**
+3. Schiefe **<span style="color: red;">X</span>**
+4. Kurtosis **<span style="color: red;">X</span>**
+5. Histogramm symmetrisch und glockenförmig?: teilweise ( **<span style="color: lightgreen;">$\checkmark$</span>** )
+6. QQ-Plot überprüfen  ( **<span style="color: lightgreen;">$\checkmark$</span>** )
+7. Sind die Boxplots symmetrisch?  **<span style="color: lightgreen;">$\checkmark$</span>**
+8. Signifikanztests für Normalverteilung p>0,05? **<span style="color: red;">X</span>**
+
+### p-Werte
+Signifikant? p=_____
+
+### Konfidenzintervall
+Mittelwert ______, 95%-Konfidenzintervall _______
+
+### Antwortsatz
+Die Neuinfektionsrate unterschied sich mit p = _______ signifikant zwischen den Jahren 1 und 2. In Jahr 1 war die Neuinfektionsrate im Mittel um ________ höher (95%-Konfidenzintervall _________). 
+
+
+## So geht´s - t-Test für abhängige Stichproben
+### Normalverteilung prüfen -> wie in t_test_Uebung (unabhängige)
+#### deskriptive Statistik
+```{r message=FALSE, warning=FALSE}
+
+# Daten einlesen
+Daten_Milchkuh_Betriebe <-
+Daten_Milchkuh_Betriebe_abh <-
+
+#Übersicht Neuinfektionsrate gruppiert nach konventionell und ökologisch 
+
+
+```
+
+Checkliste:
+
+* Mittelwert ≈ Median?
+* Std << Mittelwert?
+* Schiefe > 2*Std.-Fehler?
+* Kurtosis > 2*Std.-Fehler?
+\
+#### Tests auf Normalverteilung -> Kolmogorov-Smirnov/ Shapiro test
+```{r message=FALSE, warning=FALSE}
+# konventionell
+## Kolmogorov-Smirnov
+
+## Shapiro
+
+
+# oeko
+## Kolmogorov-Smirnov
+
+## Shapiro
+
+
+```
+\
+Wenn p<0,05, dann wird keine Normalverteilung angenommen. 
+Achtung: Tests meist zu sensitiv!
+\
+
+#### Histogramm    !!!! Gruppen Funktion: konventionell vs. Öko
+```{r message=FALSE, warning=FALSE}
+# Histogramm Neuinfektionsrate alle Produktionstypen
+
+# Histogramm Neuinfektionsrate konventionell und oekologisch nebeneinander aufgetragen
+
+# Histogramm konventionell
+
+# Histogramm oeko
+```
+
+Das Histogramm soll eine schöne Glockenform haben und außerdem symmetrisch sein. 
+
+#### QQ - Plot
+```{r message=FALSE, warning=FALSE}
+#QQ-Plot Neuinfektionsrate (Variante 1)
+
+#QQ-Plot Neuinfektionsrate konventioneller und ökologischer Betriebe (Variante 2 mitPaket ggplot2)
+
+```
+
+Das QQ-Diagramm zeigt die Idealform als Gerade und die realen Daten als Kugeln. Die Kugeln sollen so dicht wie möglich an der Gerade liegen und keinen kurvenförmigen Verlauf haben. Ausfransen oben und unten ist okay. 
+
+#### Boxplot
+```{r message=FALSE, warning=FALSE}
+
+# Boxplots der Neuinfektionsrate von konvemtionell und oekologisch
+
+```
+
+Der Boxplot ist eine weitere Darstellungsform, die v.a. Elemente von nicht normalverteilten Daten darstellt. Die Box ist der Interquartilsrange (25 – 75%-Quartil), der Strich in der Mitte ist der Median. Die Whisker stellen den Bereich bis 1,5 Standardabweichungen dar, darüber sind die Daten als potentielle Ausreißer eingezeichnet. 
+
+Bei Normalverteilung ist der Boxplot symmetrisch. 
+
+
+### t-Test bei verbundenen Stichproben für normalverteilte Daten
+#### Statistik bei gepaarten Stichproben: Datensatz "Daten_Milchkuh_Betriebe_abh"
+```{r message=FALSE, warning=FALSE}
+# Übersicht Neuinfektionsrate der Jahre 1 bis 3 
+
+
+```
+
+#### Korrelation bei gepaarten Stichproben Neuinfektionsrate 1 vs. Neuinfektionsrate 2
+```{r message=FALSE, warning=FALSE}
+
+```
+Korrelation zwischen den beiden Variablen. Mit r = _______ ziemlich hoch
+
+#### t-Test bei gepaarten Stichproben Neuinfektionsrate 1 und Neuinfektionsrate 2
+```{r message=FALSE, warning=FALSE}
+
+
+```
+
+* t-Test: Wenn p<0,05, kann die Nullhypothese abgelehnt werden -> es liegt ein signifikanter Unterschied vor. 
+* 95%-Konfidenzintervall um die Differenz: In der Gesamtpopulation sinkt die Neuinfektionsrate mit einer Wahrscheinlichkeit von 95% um ________%.
+* Mittlere Differenz zwischen den Gruppen: ________ -> Im zweiten Jahr gibt es 0,146% weniger Neuinfektionen durchschnittlich. 
+
+
+### Nicht parametrischer Test für nicht normalverteilte Daten: Wilcoxon-Test
+```{r message=FALSE, warning=FALSE}
+
+```
+### t-Test für eine Stichprobe für normalverteilte Daten 
+#### Differenz berechnen und neue Variable "diff_2_1" anlegen
+```{r message=FALSE, warning=FALSE}
+# Neue Variable "diff_2_1" Differenz Neuinfektionsrate 2 zu Neuinfektionsrate 1
+
+# Übersicht über die neue Variable "diff_2_1"
+
+
+```
+
+#### Ein-Stichproben-t-Test der Variable "diff_2_1"
+```{r message=FALSE, warning=FALSE}
+
+```
+
+* Der p-Wert ist mit _______ signifikant.
+* 95%-Konfidenzintervall um die Differenz: In der Gesamtpopulation sinkt die Neuinfektionsrate mit einer Wahrscheinlichkeit von 95% um _______%.
+* Mittlere Differenz zwischen den Gruppen: _____ -> Im zweiten Jahr gibt es 0,146% weniger Neuinfektionen durchschnittlich.  
+
+```{r message=FALSE, warning=FALSE}
+
+# wilcoxon Test mit R base
+
+# benötigte Pakete laden
+library(ggpubr)
+library(ggplot2)
+library(rstatix)
+
+# wilcoxon Test mit rstatix und Objekt "stat.test" bestimmen
+
+# graphische Darstellung Wilcoxon Test bei einer Stichprobe
+
+```
+
+
+* Hier ist der hypothetische Median (kein Unterschied; blau) und der beobachtete Median (rot) eingezeichnet. 

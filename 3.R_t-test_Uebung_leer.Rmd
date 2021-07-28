@@ -1,0 +1,147 @@
+---
+title: "Übung - t-Test für unabhängige Stichproben"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Übung: t-test für unabhängige Stichproben
+
+### Aufgabenstellung
+Überprüfe, ob sich die Neuinfektionsrate zwischen konventionellen und ökologischen Betrieben unterscheidet. 
+
+### Nullhypothese formulieren
+
+
+### Eigenschaften der Verteilung prüfen. Liegt Normalverteilung vor?
+1. Mittelwert ≈ Median 
+2. Standardabweichung << Mittelwert 
+3. Schiefe
+4. Kurtosis
+5. Histogramm symmetrisch und glockenförmig?
+6. QQ-Plot überprüfen
+7. Sind die Boxplots symmetrisch?
+8. Signifikanztests für Normalverteilung p>0,05?
+
+### Levene-Test
+p-Wert: _____ obere Zeile ,_____ untere Zeile
+### p-Werte
+p-Wert:______ Signifikant?
+
+### Konfidenzintervall
+Mittelwert ______, 95%-Konfidenzintervall ________
+
+### Antwortsatz
+
+
+
+## So geht´s - t-Test für unabhängige Stichproben
+### Normalverteilung prüfen
+#### deskriptive Statistik
+```{r message=FALSE, warning=FALSE}
+# Daten einlesen
+
+# Deskription 
+
+```
+
+
+Checkliste:
+
+* Mittelwert ≈ Median?
+* Std << Mittelwert?
+* Schiefe
+* Kurtosis
+
+
+#### Tests auf Normalverteilung -> Kolmogorov-Smirnov/ Shapiro test
+```{r message=FALSE, warning=FALSE}
+# konventionell
+## Kolmogorov-Smirnov
+
+## Shapiro
+
+
+# oeko
+## Kolmogorov-Smirnov
+
+## Shapiro
+
+```
+
+
+Wenn p<0,05, dann wird keine Normalverteilung angenommen. 
+Achtung: Tests meist zu sensitiv!
+
+
+#### Histogramm    
+```{r message=FALSE, warning=FALSE}
+# Histogramm Neuinfektionsrate alle Produktionstypen
+
+# Histogramm Neuinfektionsrate konventionell und oekologisch nebeneinander aufgetragen
+
+# Histogramm konventionell
+
+# Histogramm oeko
+
+```
+
+Das Histogramm soll eine schöne Glockenform haben und außerdem symmetrisch sein. 
+
+#### QQ - Plot
+```{r message=FALSE, warning=FALSE}
+#QQ-Plot Neuinfektionsrate (Variante 1)
+
+#QQ-Plot Neuinfektionsrate konventioneller und ökologischer Betriebe (Variante 2 mitPaket ggplot2)
+
+```
+
+Das QQ-Diagramm zeigt die Idealform als Gerade und die realen Daten als Punkte. Die Punkte sollen so dicht wie möglich an der Gerade liegen und keinen kurvenförmigen Verlauf haben. Ausfransen oben und unten kann okay sein. 
+
+#### Boxplot
+```{r message=FALSE, warning=FALSE}
+# Boxplots der Neuinfektionsrate von konvemtionell und oekologisch
+
+```
+
+Der Boxplot ist eine weitere Darstellungsform, die v.a. Elemente von nicht normalverteilten Daten darstellt. Die Box ist der Interquartilsrange (25 – 75%-Quartil), der Strich in der Mitte ist der Median. Die Whisker stellen den Bereich bis 1,5 Standardabweichungen dar, darüber sind die Daten als potentielle Ausreißer eingezeichnet. 
+
+Bei Normalverteilung ist der Boxplot symmetrisch. 
+
+
+### t-Test fuer normalverteilte Daten
+```{r message=FALSE, warning=FALSE}
+# Übersicht Neuinfektionsrate konventionell und oekologisch 
+
+# Levene- test
+?car::levene.test
+```
+
+```{r message=FALSE, warning=FALSE}
+# t-Test
+?t.test
+
+```
+
+* Levene-Test auf Varianzgleichheit: Wenn p<0,05, dann liegt keine Varianzgleichheit vor 
+* t-Test: Wenn p<0,05, kann die Nullhypothese abgelehnt werden -> es liegt ein signifikanter Unterschied vor. 
+
+
+### Nicht parametrischer Test für nicht normalverteilte Daten: Mann-Whitney-U-Test der Neuinfektionsrate von konventionell vs. oekologisch
+```{r message=FALSE, warning=FALSE}
+?wilcox.test
+```

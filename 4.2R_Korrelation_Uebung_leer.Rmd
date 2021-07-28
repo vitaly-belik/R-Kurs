@@ -1,0 +1,135 @@
+---
+title: "Übung - Korrelation"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Aufgabenstellung
+Besteht eine (substantielle lineare) Korrelation zwischen der Mastitis-Neuinfektionsrate und dem Anteil chronisch euterkranker Kühe? 
+
+### Beschreibende Statistiken
+1.	Beide Variablen auf Normalverteilung testen
+    a.	Liegen stark schiefe Verteilungen oder Ausreißer vor? Wenn ja Spearman Rangtest Koeffizienten nehmen
+2.	Scatterplot (Punktediagramm) mit Neuinfektionsrate auf der X und Anteil chronisch kranker Kühe auf der Y-Achse erstellen
+    a.	Ist ein einigermaßen linearer Zusammenhang denkbar (sichtbar). 
+    b.	Ist die zu erwartende Korrelation schwach, mäßig oder stark?
+
+### Hypothese formulieren
+\
+\
+
+### Koeffizienten und p-Werte
+Pearson: 
+Spearman: 
+
+### Antwortsatz
+Mit einem Spearman Rangkorrelationskoeffizienten von _______ konnte eine moderate positive Korrelation zwischen der Neuinfektionsrate und dem Anteil chronisch kranker Tiere festgestellt werden. 
+
+CAVE: Das sagt nichts darüber aus, ob das eine mit dem anderen zusammenhängt. Der Koeffizient besagt nur, dass in Betrieben mit hoher Neuinfektionsrate im Schnitt auch der Anteil chronisch kranker Tiere hoch ist. 
+
+## So geht´s - Korrelation
+### explorative Datenanalyse
+```{r  echo=F, warning=FALSE}
+# Daten einlesen
+# Daten_Milchkuh_Betriebe <- 
+
+# Uebersicht: Neuinfektrate und Anteil chronisch kranker Tiere
+
+```
+
+
+##### *Konfidenzintervall - Neuinfektionsrate*
+```{r message=FALSE, warning=FALSE}
+
+
+```
+
+##### *Konfidenzintervall - Anteil chronisch Kranker Tiere* 
+```{r message=FALSE, warning=FALSE}
+
+
+```
+
+### Test auf Normalverteilung - Neuinfektionsrate
+```{r message=FALSE, warning=FALSE}
+# Kolmogorov-Smirnov Test
+
+# Shapiro-Wilk Test
+
+```
+### Test auf Normalverteilung - Anteil chronisch Kranker Tiere
+```{r message=FALSE, warning=FALSE}
+# Kolmogorov- Smirnov Test
+
+# Shapiro-Wilk Test
+
+```
+Beide Tests auf Normalverteilung (H0: normalverteilt, HA: nicht normalverteilt) sind hoch-signifikant (Signifikanz < 0.001); das bedeutet, dass die Werteverteilungen nicht normalverteilt sind.
+
+### QQ - Plot & Histogramm
+```{r message=FALSE, warning=FALSE}
+# Neuinfektionsrate
+
+
+# Anteil chronisch kranker Kühe (%)
+```
+
+
+### Scatterplot
+```{r message=FALSE, warning=FALSE}
+
+```
+
+Auch hier zeigt sich in beiden Achsen die nicht-normale Verteilung mit Ausreißern nach oben resp. nach rechts. Grundsätzlich ist ein schwacher bis moderater positiver linearer Zusammenhang zu erwarten (höhere Werte für Anteil chronisch kranker Kühe <-> höhere Werte bei Neuinfektionsrate)
+
+Was könnte man basierend auf der Grafik ggf. überlegen, um die Daten besser darstellbar / auswertbar zu machen?
+
+
+### Boxplot
+```{r message=FALSE, warning=FALSE}
+
+
+```
+
+Die beiden Boxplots zeigen eine Asymmetrie (nach oben stärker ausgezogen, mit moderaten und einigen extremen Ausreißern).
+
+Fazit: beide Variablen sind rechtsschief verteilt; daher sollten sie entweder vor weitergehenden Auswertungen transformiert (und damit die Verteilung „normalisiert“) werden, oder es müssen nicht-parametrische statistische Tests zum Einsatz kommen.
+
+
+Mit ? kann die Hilfe zu einer Funktion aufgerufen werden. Hier 2 Funktionen um eine Correlation zu berechnen.
+```{r message=FALSE, warning=FALSE}
+?cor
+```
+
+```{r}
+?correlation::correlation()
+```
+
+### Korrelationskoeffizient nach Pearson
+```{r message=FALSE, warning=FALSE}
+
+
+```
+### Korrelationskoeffizient nach Spearman
+```{r message=FALSE, warning=FALSE}
+
+
+```
+
+Im vorliegenden Fall sollte auf Grund der rechtsschiefen Verteilungen der Spearman-Rangkorrelations-Koeffizient berichtet werden.
+

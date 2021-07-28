@@ -1,0 +1,46 @@
+---
+title: "Konfidenzintervall"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Übung: Konfidenzintervall
+
+### Aufgabenstellung
+Berechne die 95%-Konfidenzintervalle für die Tieranzahl und den Anteil chronisch kranker Kühe.
+
+### Hypothese formulieren
+entfällt
+
+### p-Werte
+entfällt
+
+### Konfidenzintervall
+#### So geht’s in R - Konfidenzintervalle
+
+```{r message=FALSE, warning=FALSE}
+# Daten einlesen
+Daten_Milchkuh_Betriebe <-
+
+# Zusammenfassung
+
+# Konfidenzintervall
+
+```
+### Antwortsatz
+Mit 95% Sicherheit liegt der Mittelwert der Gesamtpopulation zwischen ____________.

@@ -1,0 +1,37 @@
+---
+title: "Übung - Transformation"
+author: "IVEB Berlin"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document:
+    depth: 3
+    fig_caption: yes
+    highlight: tango
+    number_sections: no
+    theme: paper
+    toc: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Aufgabenstellung
+
+Lege eine neue Variable an mit den log-transformierten Werten für die Tieranzahl. 
+
+Vergleiche die Histogramme der Tieranzahl und der logarithmierten Tieranzahl.
+
+```{r  echo=F, warning=FALSE, warning=F}
+
+Daten_Milchkuh_Betriebe <- readxl::read_excel("../Rohdaten_2020-11-23.xlsx", sheet = "Rohdaten")
+
+# Transformation
+
+# Histogramm
+
+```
